@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"bookman/model"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 )
@@ -32,4 +34,19 @@ func WriteJson(w http.ResponseWriter, status int, res any) error {
 }
 func WriteError(w http.ResponseWriter, status int, err error) {
 	WriteJson(w, status, map[string]string{"error": err.Error()})
+}
+
+// for valid book details
+
+func ValidateBook(book model.Book) error {
+	if book.BookName == "" {
+		return errors.New("book name is required")
+	}
+	if book.AuthorName == "" {
+		return errors.New("author name is required")
+	}
+	if book.Prize <= 0 {
+		return errors.New("prize can not be blank and must be greater than zero")
+	}
+	return nil
 }

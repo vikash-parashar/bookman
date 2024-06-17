@@ -1,22 +1,36 @@
 package handler
 
 import (
-	"bookman/db"
+	"bookman/controls"
+	"bookman/database"
+
 	"bookman/model"
 	"bookman/utils"
 	"net/http"
 )
 
 func CreateBook(w http.ResponseWriter, r *http.Request) {
-	db, err := db.DbIn()
+	db, err := database.DbIn()
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
 	}
 	defer db.Close()
 
 	var newBook model.Book
 	if err := utils.ParseJson(r, &newBook); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
+		return
 	}
-
+	err = utils.ValidateBook(newBook)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+	res, err := controls.InsertBook(db, newBook)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	utils.WriteJson(w, http.StatusCreated, res)
 }
