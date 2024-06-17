@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Admin Api endPoint
 func CreateBook(w http.ResponseWriter, r *http.Request) {
 	db, err := database.DbIn()
 	if err != nil {
@@ -51,4 +52,24 @@ func GetAllBooks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.WriteJson(w, http.StatusOK, books)
+}
+func GetBookById(w http.ResponseWriter, r *http.Request) {
+	db, err := database.DbIn()
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	var book model.Book
+	if err := utils.ParseJson(r, &book); err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+	book, err = controls.GetBookById(db, book.BookId, book.BookName)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+	utils.WriteJson(w, http.StatusOK, book)
 }

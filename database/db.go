@@ -46,3 +46,5 @@ var GetAllBooks = `
 SELECT book_id, book_name, author_name, prize, added_on 
 FROM books
 `
+var GetBookById = `SELECT book_id, book_name, author_name, prize, added_on 
+FROM books WHERE book_id=$1`

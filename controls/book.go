@@ -32,7 +32,7 @@ func IsBookRegistered(db *sql.DB, bookName string) error {
 	return fmt.Errorf("the book is already registered with Book-ID: %d", bookId)
 }
 
-func InsertBook(db *sql.DB, payload model.Book) (response model.Response, err error) {
+func InsertBook(db *sql.DB, payload model.Book) (response model.Book, err error) {
 	err = CreateBookTable(db)
 	if err != nil {
 		err = errors.New("failed to create book table")
@@ -47,10 +47,12 @@ func InsertBook(db *sql.DB, payload model.Book) (response model.Response, err er
 	if err != nil {
 		return response, err
 	}
-	return model.Response{
-		Response:  payload,
-		CreatedAt: time.Now().Format("15:04:05 Monday 01-02-2006"),
-		Massage:   "Book Created succesfuly",
+	return model.Book{
+		BookId:     payload.BookId,
+		BookName:   payload.BookName,
+		AuthorName: payload.AuthorName,
+		Prize:      payload.Prize,
+		AddedOn:    database.CurentTime,
 	}, nil
 }
 func GetAllBooks(db *sql.DB) ([]model.Book, error) {
@@ -76,4 +78,16 @@ func GetAllBooks(db *sql.DB) ([]model.Book, error) {
 	}
 
 	return books, nil
+}
+func GetBookById(db *sql.DB, bookId int, bookName string) (model.Book, error) {
+	var book model.Book
+	err := db.QueryRow(database.GetBookById, bookId).Scan(&book.BookId, &book.BookName, &book.AuthorName, &book.Prize, &book.AddedOn)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = fmt.Errorf("no book found with provided bookid: %v and name :%v", bookId, bookName)
+			return book, err
+		}
+		return book, err
+	}
+	return book, nil
 }
