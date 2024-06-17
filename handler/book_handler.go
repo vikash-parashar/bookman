@@ -22,6 +22,7 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
+
 	err = utils.ValidateBook(newBook)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -29,8 +30,25 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	res, err := controls.InsertBook(db, newBook)
 	if err != nil {
-		utils.WriteError(w, http.StatusInternalServerError, err)
+		utils.WriteError(w, http.StatusBadRequest, err)
 		return
 	}
 	utils.WriteJson(w, http.StatusCreated, res)
+}
+
+func GetAllBooks(w http.ResponseWriter, r *http.Request) {
+	db, err := database.DbIn()
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	books, err := controls.GetAllBooks(db)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	utils.WriteJson(w, http.StatusOK, books)
 }
