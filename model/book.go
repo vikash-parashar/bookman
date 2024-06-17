@@ -1,17 +1,15 @@
 package model
 
-import "time"
-
 type Book struct {
-	BookId     int       `json:"book_id"`
-	BookName   string    `json:"book_name"`
-	AuthorName string    `json:"author_name"`
-	Prize      float64   `json:"prize"`
-	AddedOn    time.Time `json:"added_on"`
+	BookId     int     `json:"book_id"`
+	BookName   string  `json:"book_name"`
+	AuthorName string  `json:"author_name"`
+	Prize      float64 `json:"prize"`
+	AddedOn    string  `json:"added_on"`
 }
 
-type Response struct {
-	Response  Book
-	CreatedAt string
-	Massage   string
-}
+// type Response struct {
+// 	Response  Book
+// 	CreatedAt string
+// 	Massage   string
+// }

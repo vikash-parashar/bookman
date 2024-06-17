@@ -39,3 +39,12 @@ var BookTable string = `CREATE TABLE IF NOT EXISTS books (
 );`
 
 var InsertBookIn = `INSERT INTO books (book_name, author_name, prize, added_on)VALUES ($1, $2, $3, $4)RETURNING book_id`
+
+var IsBookRegisterd string = `SELECT book_id FROM books WHERE book_name = $1`
+
+var GetAllBooks = `
+SELECT book_id, book_name, author_name, prize, added_on 
+FROM books
+`
+var GetBookById = `SELECT book_id, book_name, author_name, prize, added_on 
+FROM books WHERE book_id=$1`
