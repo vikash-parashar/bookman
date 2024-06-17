@@ -11,5 +11,6 @@ func BookManRoutes() *mux.Router {
 	r.HandleFunc("/book/create", handler.CreateBook).Methods("POST")
 	r.HandleFunc("/book/get/all", handler.GetAllBooks).Methods("GET")
 	r.HandleFunc("/book/search", handler.GetBookById).Methods("GET")
+	r.HandleFunc("/book/delete/byid/{bookid}", handler.DeleteBookByid).Methods("DELETE")
 	return r
 }
