@@ -9,3 +9,9 @@ type Book struct {
 	Prize      float64   `json:"prize"`
 	AddedOn    time.Time `json:"added_on"`
 }
+
+type Response struct {
+	Response  Book
+	CreatedAt string
+	Massage   string
+}
