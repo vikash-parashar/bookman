@@ -50,3 +50,10 @@ var GetBookById = `SELECT book_id, book_name, author_name, prize, added_on
 FROM books WHERE book_id=$1`
 
 var DeleteBookByid = `DELETE FROM books  WHERE book_id = $1 `
+var UpdateBookByid = `
+        UPDATE books
+        SET book_name = $1, 
+		author_name = $2,
+		prize=$3
+        WHERE book_id = $4
+    `

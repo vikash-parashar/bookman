@@ -111,3 +111,26 @@ func DeleteBookByid(db *sql.DB, bookid int) (string, error) {
 	// log.Printf(res)
 	return res, nil
 }
+func UpdateBookByid(db *sql.DB, bookid int, payload model.Book) (string, error) {
+	// query := `
+    //     UPDATE books
+    //     SET book_name = $1, author_name = $2, prize = $3
+    //     WHERE id = $4
+    // `
+	result, err := db.Exec(database.UpdateBookByid, payload.BookName, payload.AuthorName, payload.Prize, bookid)
+	if err != nil {
+		return "", errors.New("internal server error")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return "", err
+	}
+
+	if rowsAffected == 0 {
+		return "", errors.New("no book found with this provided id")
+	}
+
+	res := fmt.Sprintf("Updated book with ID %d", bookid)
+	return res, nil
+}

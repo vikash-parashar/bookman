@@ -3,6 +3,8 @@ package handler
 import (
 	"bookman/controls"
 	"bookman/database"
+	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"bookman/model"
@@ -104,4 +106,41 @@ func DeleteBookByid(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.WriteJson(w, http.StatusOK, res)
+}
+func UpdateBookHandler(w http.ResponseWriter, r *http.Request) {
+	db, err := database.DbIn()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Unable to connect to database: %v", err), http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	vars := mux.Vars(r)
+	bookIDStr := vars["bookid"]
+	if bookIDStr == "" {
+		http.Error(w, "Provided book ID cannot be blank", http.StatusBadRequest)
+		return
+	}
+
+	bookID, err := strconv.Atoi(bookIDStr)
+	if err != nil {
+		http.Error(w, "Invalid book ID", http.StatusBadRequest)
+		return
+	}
+
+	var payload model.Book
+	err = json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		http.Error(w, "Error decoding request body", http.StatusBadRequest)
+		return
+	}
+
+	res, err := controls.UpdateBookByid(db, bookID, payload)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": res})
 }
