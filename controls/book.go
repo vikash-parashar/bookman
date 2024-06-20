@@ -112,11 +112,6 @@ func DeleteBookByid(db *sql.DB, bookid int) (string, error) {
 	return res, nil
 }
 func UpdateBookByid(db *sql.DB, bookid int, payload model.Book) (string, error) {
-	// query := `
-    //     UPDATE books
-    //     SET book_name = $1, author_name = $2, prize = $3
-    //     WHERE id = $4
-    // `
 	result, err := db.Exec(database.UpdateBookByid, payload.BookName, payload.AuthorName, payload.Prize, bookid)
 	if err != nil {
 		return "", errors.New("internal server error")
