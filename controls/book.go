@@ -91,3 +91,41 @@ func GetBookById(db *sql.DB, bookId int, bookName string) (model.Book, error) {
 	}
 	return book, nil
 }
+
+func DeleteBookByid(db *sql.DB, bookid int) (string, error) {
+	result, err := db.Exec(database.DeleteBookByid, bookid)
+	if err != nil {
+		err = errors.New("no book found with this provided id")
+		return "", err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return "", err
+	}
+
+	if rowsAffected == 0 {
+		return "", errors.New("no book found with this provided id")
+	}
+
+	res := fmt.Sprintf("Deleted book with ID %d", bookid)
+	// log.Printf(res)
+	return res, nil
+}
+func UpdateBookByid(db *sql.DB, bookid int, payload model.Book) (string, error) {
+	result, err := db.Exec(database.UpdateBookByid, payload.BookName, payload.AuthorName, payload.Prize, bookid)
+	if err != nil {
+		return "", errors.New("internal server error")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return "", err
+	}
+
+	if rowsAffected == 0 {
+		return "", errors.New("no book found with this provided id")
+	}
+
+	res := fmt.Sprintf("Updated book with ID %d", bookid)
+	return res, nil
+}
