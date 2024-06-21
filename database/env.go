@@ -42,9 +42,12 @@ var UserTable string = `CREATE TABLE IF NOT EXISTS users (
     full_name VARCHAR(255) NOT NULL,
     user_name VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
+	password TEXT NOT NULL,
     mobile_no VARCHAR(15)NOT NULL UNIQUE,
     role VARCHAR(50),
     created_at TEXT NOT NULL
 );`
 
-var InsertUserIn = `INSERT INTO users (full_name,user_name,email,mobile_no,role,created_at)VALUES ($1, $2, $3, $4,$5,$6)RETURNING user_id`
+var InsertUserIn = `INSERT INTO users (full_name,user_name,email,password,mobile_no,role,created_at)VALUES ($1, $2, $3, $4,$5,$6,$7)RETURNING user_id`
+
+var LogerDetail = `SELECT user_id, full_name, user_name, email, password, role FROM users WHERE email = $1`

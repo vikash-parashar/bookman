@@ -16,6 +16,6 @@ func BookManRoutes() *mux.Router {
 
 	// User Register
 	r.HandleFunc("/user/register", handler.RegisterUser).Methods("POST")
-
+	r.HandleFunc("/user/login", handler.Login).Methods("POST")
 	return r
 }
