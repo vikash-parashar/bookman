@@ -38,14 +38,13 @@ var UpdateBookByid = `
 // Quary Variable For User
 
 var UserTable string = `CREATE TABLE IF NOT EXISTS users (
-	user_id SERIAL PRIMARY KEY,
-	full_name VARCHAR(100) NOT NULL,
-	user_name VARCHAR(100) NOT NULL,
-	email VARCHAR(100) NOT NULL,
-	mobile_no VARCHAR(100) NOT NULL,
-	role VARCHAR(15) NOT NULL,
-	created_at TEXT NOT NULL,
-	update_at VARCHAR(100),
+ user_id SERIAL PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL,
+    user_name VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    mobile_no VARCHAR(15)NOT NULL UNIQUE,
+    role VARCHAR(50),
+    created_at TEXT NOT NULL
 );`
 
 var InsertUserIn = `INSERT INTO users (full_name,user_name,email,mobile_no,role,created_at)VALUES ($1, $2, $3, $4,$5,$6)RETURNING user_id`

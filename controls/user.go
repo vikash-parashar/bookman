@@ -3,8 +3,9 @@ package controls
 import (
 	"bookman/database"
 	"bookman/model"
+	"bookman/utils"
 	"database/sql"
-	"time"
+	"errors"
 )
 
 func InsertUser(db *sql.DB, user model.User) (res model.User, err error) {
@@ -22,13 +23,19 @@ func InsertUser(db *sql.DB, user model.User) (res model.User, err error) {
 	// 	return response, err
 	// }
 	var userId int
-	err = db.QueryRow(database.InsertUserIn, user.FullName, user.Username, user.Email, user.MobileNo, user.Role, time.Now().Format("15:04:05 Monday 01-02-2006")).Scan(&userId)
+	userName, err := utils.ExtractUsernameFromEmail(user.Email)
 	if err != nil {
 		return res, err
+	}
+
+	err = db.QueryRow(database.InsertUserIn, user.FullName, userName, user.Email, user.MobileNo, user.Role, database.CurentTime).Scan(&userId)
+	if err != nil {
+		return res, errors.New("email Id and mobile number is already exits")
 	}
 	return model.User{
 		UserID:    userId,
 		FullName:  user.FullName,
+		Username:  userName,
 		Email:     user.Email,
 		MobileNo:  user.MobileNo,
 		Role:      user.Role,
